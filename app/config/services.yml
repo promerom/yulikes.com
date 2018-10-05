@@ -1,0 +1,54 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+imports:
+    - { resource: "@AppBundle/Resources/config/services.yml" }
+
+parameters:
+    parsermarkdown.urlreadme: https://raw.githubusercontent.com/Emergya/SymfonyZero/master/README.md
+    app.path.carousel_images: /images/carousel/
+    enable_registration_confirmation: false
+
+services:
+    fos_user.doctrine_registry:
+        alias: doctrine
+
+    symfonyzero.email:
+        class:  AppBundle\Services\Email
+        arguments: ['@swiftmailer.mailer', '@templating', '%mailer_user%']
+
+    symfonyzero.provider.oauth:
+        class:  AppBundle\Security\FOSUBUserProvider
+        arguments: ['@fos_user.user_manager', { facebook: facebook_id, google: google_id, twitter: twitter_id }]
+
+    user.registration.form.type:
+        class: AppBundle\Form\Type\RegistrationFormType
+        arguments: ["%fos_user.model.user.class%"]
+        tags:
+            - { name: form.type, alias: user_registration }
+
+    user.profile.form.type:
+        class: AppBundle\Form\Type\ProfileFormType
+        arguments: ["%fos_user.model.user.class%"]
+        tags:
+            - { name: form.type, alias: user_profile }
+
+    symfonyzero.parsermarkdown:
+        class:      AppBundle\Services\ParserMarkdown
+        arguments:  ["%parsermarkdown.urlreadme%"]
+        
+    symfonyzero.elastica_to_model_transformer:
+        class: AppBundle\Transformer\ElasticaResultTransformer
+    
+#    symfonyzero.elastica_listener_users: 
+#        class: AppBundle\Listener\UsersListener
+#        #Object_persister: entity indexed at elasticsearch.yml config file 
+#        arguments:
+#            - @fos_elastica.object_persister.symfonyzero.user
+#            - @fos_elastica.indexable
+#        calls:
+#            - [ setContainer, ['@service_container'] ]
+#        tags:
+#            - { name: doctrine.event_listener, event: postPersist }
+#            - { name: doctrine.event_listener, event: postUpdate }
+#            - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
+   

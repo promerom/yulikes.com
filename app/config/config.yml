@@ -1,0 +1,256 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+ #   - { resource: elasticsearch.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: en
+
+framework:
+    #esi:             ~
+    translator:      { fallbacks: ["%locale%"] }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true }
+    #serializer:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        handler_id:  ~
+        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+    fragments:       ~
+    http_method_override: true
+    assets: ~
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   pdo_mysql
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        server_version:     "%database_version%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #     path:     "%database_path%"
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: gmail
+    host:      smtp.gmail.com
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: AppBundle\Entity\User
+    registration:
+        form:
+            type: user_registration
+        confirmation:
+            enabled: "%enable_registration_confirmation%" # change to true for required email confirmation
+            template: FOSUserBundle:Registration:email.txt.twig
+    resetting:
+        email:
+            template: FOSUserBundle:Registration:email.txt.twig
+    profile:
+        form:
+            type: user_profile
+    from_email:
+        address: "%mailer_user%"
+        sender_name: "%mailer_user%"
+
+easy_admin:
+    entities:
+        Carousel:
+            class: CarouselBundle\Entity\Carousel
+            list:
+                fields:
+                    [ 'text', { property: 'ImageName', label: 'Image', type: 'image', base_path: '%app.path.carousel_images%' } ]
+
+            show:
+                fields:
+                    [ 'text', { property: 'ImageName', label: 'Image', type: 'image', base_path: '%app.path.carousel_images%' } ]
+            form:
+                fields:
+                    [ { property: 'ImageName', type: 'text', type_options: { read_only: true} }, 'text', { property: 'imageFile', type: 'vich_image' } ]
+        User:
+            class: AppBundle\Entity\User
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        carousel_images:
+            uri_prefix:        "%app.path.carousel_images%"
+            upload_destination: "%kernel.root_dir%/../web/images/carousel/"
+
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
+
+white_october_breadcrumbs: ~
+
+stfalcon_tinymce:
+        include_jquery: true
+        tinymce_jquery: true
+        selector: ".tinymce"
+        language: "%locale%"
+        theme:
+            # Simple theme: same as default theme
+            simple: ~
+            # Advanced theme with almost all enabled plugins
+            advanced:
+                 plugins:
+                     - "advlist autolink lists link image charmap print preview hr anchor pagebreak"
+                     - "searchreplace wordcount visualblocks visualchars code fullscreen"
+                     - "insertdatetime media nonbreaking save table contextmenu directionality"
+                     - "emoticons template paste textcolor"
+                 toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                 toolbar2: "print preview media | forecolor backcolor emoticons | stfalcon | example"
+
+
+raul_fraile_ladybug:
+    theme: modern # select the theme: base, modern or custom themes
+    expanded: false # true to expand all the variables tree by default
+    silenced: false # true to ignore all ladybug calls
+
+xsolve_cookie_acknowledgement:
+    response_injection: true # default true
+    template: ::default/custom_cookies_message.html.twig
+
+sonata_seo:
+    encoding:         UTF-8
+    page:
+        default: sonata.seo.page.default
+        title:            Symfony Zero
+        default:          sonata.seo.page.default
+        metas:
+            name:
+                keywords:             Symfony Zero
+                description:          SymfonyZero is a free fully functional kickstarter edition. You can use it as a base for your Symfony web projects with a typical architecture. SymfonyZero includes the most common bundles preconfigured and the usual sections of a website.
+                robots:               index, follow
+
+            property:
+                # Facebook application settings
+                #'fb:app_id':          XXXXXX
+                #'fb:admins':          admin1, admin2
+
+                # Open Graph information
+                # see http://developers.facebook.com/docs/opengraphprotocol/#types or http://ogp.me/
+                'og:site_name':       Symfony Zero
+                'og:description':     SymfonyZero is a free fully functional kickstarter edition. You can use it as a base for your Symfony web projects with a typical architecture. SymfonyZero includes the most common bundles preconfigured and the usual sections of a website.
+
+            http-equiv:
+                'Content-Type':         text/html; charset=utf-8
+                #'X-Ua-Compatible':      IE=EmulateIE7
+
+            charset:
+                UTF-8:    ''
+
+        head:
+            'xmlns':              http://www.w3.org/1999/xhtml
+            'xmlns:og':           http://opengraphprotocol.org/schema/
+            #'xmlns:fb':           "http://www.facebook.com/2008/fbml"
+
+knp_menu:
+    # use "twig: false" to disable the Twig extension and the TwigRenderer
+    twig:
+        template: knp_menu.html.twig
+    #  if true, enables the helper for PHP templates
+    templating: false
+    # the renderer to use, list is also available by default
+    default_renderer: twig
+
+#lsw_memcache:
+#    session:
+#        pool: default
+#    pools:
+#        default:
+#            servers:
+#              - { host: localhost, tcp_port: 11211 }
+
+sonata_intl:
+    timezone:
+        default: Europe/Madrid
+        locales:
+            en_UK: Europe/London
+            fr:    Europe/Paris
+
+hwi_oauth:
+    firewall_names: [main]
+    connect:
+        confirmation: true
+
+    resource_owners:
+        google:
+            type: google
+            client_id: 391171632826-fe28t6v9ep5egijpaofbn075d5uhbom9.apps.googleusercontent.com
+            client_secret: MHr5h1cEUSngUBsavhiLqDqs
+            scope: "profile email"
+
+        facebook:
+            type: facebook
+            client_id: "%client_id_facebook%"
+            client_secret: "%client_secret_facebook%"
+            scope: "email, public_profile"
+            infos_url: "https://graph.facebook.com/me?fields=id,name,email,picture.type(large)"
+            paths:
+              email: email
+            options:
+              display: page
+
+        twitter:
+          type: twitter
+          client_id: "%client_id_twitter%"
+          client_secret: "%client_secret_twitter%"
+          paths:
+            profilepicture: "profile_image_url"
+
+    fosub:
+#       try 30 times to check if a username is available (foo, foo1, foo2 etc)
+        username_iterations: 30
+
+#       mapping between resource owners (see below) and properties
+        properties:
+            google: google_id
+            facebook: facebook_id
+            twitter: twitter_id
+
+

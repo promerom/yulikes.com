@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+
+<div class="container login-container">
+  <div class="col-xs-12 col-sm-4 col-sm-offset-4">
+    <p>
+      {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+      {% endif %}
+    </p>
+
+    <form class="form-signin" action="{{ path("fos_user_security_check") }}" method="post">
+      <h3 class="form-signin-heading">Please sign in</h3>
+      <div class="form-signin-subheading">(sample user: <b>user:user</b>) - (sample admin: <b>admin:admin</b>)</div>
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+      <label for="username">Username</label>
+      <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Username" required autofocus>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="_password" class="form-control" placeholder="Password" required>
+
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+      <div class="under-form-buttons">
+        <a class="btn btn-lg btn-warning btn-block" href={{ path('hwi_oauth_service_redirect', {'service': 'google'}) }}>Sign in with Google</a>
+        <a class="btn btn-lg btn-primary btn-block" href={{ path('hwi_oauth_service_redirect', {'service': 'facebook'}) }}>Sign in with Facebook</a>
+        <a class="btn btn-lg btn-info btn-block" href={{ path('hwi_oauth_service_redirect', {'service': 'twitter'}) }}>Sign in with Twitter</a>
+        <a href="{{ path('fos_user_resetting_request') }}">Forgot password?</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock body %}

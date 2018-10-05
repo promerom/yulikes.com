@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html {{sonata_seo_html_attributes()}}>
+    <head {{sonata_seo_head_attributes()}}>
+        {{ sonata_seo_title() }}
+        {{ sonata_seo_metadatas() }}
+        {{ sonata_seo_link_canonical() }}
+        {{ sonata_seo_lang_alternates() }}
+
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome to Symfony Zero preconfigured version!{% endblock %}</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        {% block stylesheets %}
+            <link href="{{ asset('css/style.css') }}" type="text/css" rel="stylesheet" />
+        {% endblock %}
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+
+    {{ include('default/navbar.html.twig') }}
+
+    <div id="container">
+      {% for flash_message in app.session.flashbag.get('info') %}
+        <div class="alert alert-success">
+            <div class="flash-notice">
+                {{ flash_message }}
+            </div>
+        </div>
+      {% endfor %}
+      {# wo_render_breadcrumbs() #}
+      <div style='width:80%;text-align: left;margin:0 auto;padding:10px'>
+      {% block body %}
+      {% endblock %}
+      </div>
+    </div>
+
+    {{ include('default/footer.html.twig') }}
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    {% block javascripts %}
+    {% endblock %}
+</body>
+</html>
