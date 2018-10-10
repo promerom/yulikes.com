@@ -25,14 +25,14 @@ class AppKernel extends Kernel
             new Xsolve\CookieAcknowledgementBundle\XsolveCookieAcknowledgementBundle(),
             new Sonata\SeoBundle\SonataSeoBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
-            //new Lsw\MemcacheBundle\LswMemcacheBundle(),
+            new Lsw\MemcacheBundle\LswMemcacheBundle(),
             new Sonata\IntlBundle\SonataIntlBundle(),
             //new MZ\MailChimpBundle\MZMailChimpBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new CarouselBundle\CarouselBundle(),
             new Vich\UploaderBundle\VichUploaderBundle(),
-        	#new FOS\ElasticaBundle\FOSElasticaBundle()	
+        	new FOS\ElasticaBundle\FOSElasticaBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
