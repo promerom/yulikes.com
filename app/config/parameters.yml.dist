@@ -28,3 +28,6 @@ parameters:
 
     client_id_twitter: toBeChanged
     client_secret_twitter: toBeChanged
+    
+    elastic_host: localhost 
+    elastic_port: 92000
